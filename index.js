@@ -50,9 +50,9 @@ const selectMidiDevices = async () => {
   });
 
   input.on('noteoff', msg => {
-    mySocket.emit('me noteoff', msg);
+    mySocket.emit('noteoff', msg);
 
-    console.log('noteon', msg);
+    console.log('me noteon', msg);
   });
 
   partnerSocket.on('noteon', msg => {
