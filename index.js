@@ -43,27 +43,33 @@ const selectMidiDevices = async () => {
     spinner.succeed('Connected to partner!');
   });
 
+  partnerSocket.on('disconnect', () => {
+    spinner.text = 'Trying to reconnect!';
+    spinner.color = 'yellow';
+    spinner.start();
+  });
+
   input.on('noteon', msg => {
     mySocket.emit('noteon', msg);
-
-    console.log('me noteon', msg);
   });
 
   input.on('noteoff', msg => {
     mySocket.emit('noteoff', msg);
+  });
 
-    console.log('me noteon', msg);
+  input.on('cc', msg => {
+    mySocket.emit('cc', msg);
   });
 
   partnerSocket.on('noteon', msg => {
     output.send('noteon', msg);
-
-    console.log('noteon', msg);
   });
 
   partnerSocket.on('noteoff', msg => {
     output.send('noteoff', msg);
+  });
 
-    console.log('noteoff', msg);
+  partnerSocket.on('cc', msg => {
+    output.send('cc', msg);
   });
 })();
