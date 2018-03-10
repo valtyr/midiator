@@ -44,18 +44,26 @@ const selectMidiDevices = async () => {
   });
 
   input.on('noteon', msg => {
-    partnerSocket.emit('noteon', msg);
+    mySocket.emit('noteon', msg);
+
+    console.log('me noteon', msg);
   });
 
   input.on('noteoff', msg => {
-    partnerSocket.emit('noteoff', msg);
+    mySocket.emit('me noteoff', msg);
+
+    console.log('noteon', msg);
   });
 
-  mySocket.on('noteon', msg => {
+  partnerSocket.on('noteon', msg => {
     output.send('noteon', msg);
+
+    console.log('noteon', msg);
   });
 
-  mySocket.on('noteoff', msg => {
+  partnerSocket.on('noteoff', msg => {
     output.send('noteoff', msg);
+
+    console.log('noteoff', msg);
   });
 })();
