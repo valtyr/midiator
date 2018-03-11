@@ -122,7 +122,7 @@ module.exports = async () => {
         headers: {authorization: 'Bearer ' + client_token},
       });
     } catch (e) {
-      console.log(e);
+      console.log(e); // eslint-disable-line no-console
     } finally {
       process.exit();
     }

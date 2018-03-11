@@ -9,6 +9,9 @@
   "devDependencies": {
     "eslint": "^4.18.2"
   },
+  "scripts": {
+    "lint": "eslint ."
+  },
   "dependencies": {
     "easymidi": "^0.0.4",
     "find-free-port": "^1.2.0",
