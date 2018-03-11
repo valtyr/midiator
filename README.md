@@ -18,5 +18,4 @@ $ npm install -g midiator
 $ midiator
 ```
 
-Midiator provides you with an ID which your friend can use to join your session.
-You then choose your MIDI devices and type in your friend's code.
+Midiator provides you and your partner with IDs that you can use to join each other's sessions. Usage is as simple as typing in each other's IDs and starting to play!
