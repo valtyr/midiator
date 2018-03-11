@@ -12,6 +12,7 @@
   "dependencies": {
     "easymidi": "^0.0.4",
     "inquirer": "^5.1.0",
+    "ngrok": "^3.0.0",
     "ora": "^2.0.0",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4"

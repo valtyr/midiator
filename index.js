@@ -1,11 +1,21 @@
-const inquirer = require('inquirer');
-const ora = require('ora');
-const easymidi = require('easymidi');
 const io = require('socket.io-client');
+const easymidi = require('easymidi');
+const inquirer = require('inquirer');
+const ngrok = require('ngrok');
+const ora = require('ora');
 
-const selectMidiDevices = async () => {
+const getUrlAndOptions = async () => {
   const inputs = easymidi.getInputs();
   const outputs = easymidi.getOutputs();
+
+  process.stdout.write('\033c');
+
+  const ngrokSpinner = ora('Getting public URL').start();
+  const myURL = await ngrok.connect(4400);
+  ngrokSpinner.succeed(`Your public url is ${myURL}`);
+
+  console.log('\n\x1b[2mSetup:\x1b[0m');
+
   return await inquirer.prompt([
     {
       type: 'list',
@@ -22,7 +32,7 @@ const selectMidiDevices = async () => {
     {
       type: 'input',
       name: 'ip',
-      message: "What's your partner's hostname and port?",
+      message: "What's your partner's URL?",
     },
   ]);
 };
@@ -30,23 +40,23 @@ const selectMidiDevices = async () => {
 (async () => {
   const mySocket = require('socket.io')(4400);
 
-  const options = await selectMidiDevices();
+  const options = await getUrlAndOptions();
 
-  const input = new easymidi.Input(options.input);
-  const output = new easymidi.Output(options.output);
+  const input = new easymidi.Input(options.input, true);
+  const output = new easymidi.Output(options.output, true);
 
-  const spinner = ora('Connecting to partner').start();
+  const connectSpinner = ora('Connecting to partner').start();
 
   const partnerSocket = io(options.ip);
 
   partnerSocket.on('connect', () => {
-    spinner.succeed('Connected to partner!');
+    connectSpinner.succeed('Connected to partner!');
   });
 
   partnerSocket.on('disconnect', () => {
-    spinner.text = 'Trying to reconnect!';
-    spinner.color = 'yellow';
-    spinner.start();
+    connectSpinner.text = 'Trying to reconnect!';
+    connectSpinner.color = 'yellow';
+    connectSpinner.start();
   });
 
   input.on('noteon', msg => {
