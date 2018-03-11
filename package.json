@@ -1,6 +1,6 @@
 {
   "name": "midiator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Control your friends' MIDI keyboards through websockets!",
   "main": "index.js",
   "repository": "https://github.com/valtyr/midiator",
