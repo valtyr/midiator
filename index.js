@@ -3,18 +3,44 @@ const easymidi = require('easymidi');
 const inquirer = require('inquirer');
 const ngrok = require('ngrok');
 const ora = require('ora');
+const rid = require('readable-id');
+const fetch = require('node-fetch');
 
-const getUrlAndOptions = async () => {
+const client_token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkFDcjFZcTZ4ektHIiwicGF0aCI6Im1pZGlhdG9yIiwiaWF0IjoxNTIwNzMxMTA0LCJleHAiOjQ2NzQzMzExMDR9.uSk99x3kmqxfD-ChUnzdCfTTcn6TbxBIrmQMeDZa60I';
+
+let id;
+
+const startNgrokAndSaveId = async () => {
+  const ngrokSpinner = ora('Getting public id').start();
+  const url = await ngrok.connect(1789);
+
+  id = rid().replace('-', '');
+  await fetch('https://jsonbin.org/valtyr/midiator/' + id, {
+    headers: {authorization: 'Bearer ' + client_token},
+    method: 'POST',
+    body: JSON.stringify({url}),
+  });
+  await fetch('https://jsonbin.org/valtyr/midiator/' + id + '/_perms', {
+    headers: {authorization: 'Bearer ' + client_token},
+    method: 'PUT',
+  });
+
+  ngrokSpinner.succeed('Your id is ' + id);
+};
+
+const getNgrokUrlFromId = async (partnerId, spinner) => {
+  const data = await fetch('https://jsonbin.org/valtyr/midiator/' + partnerId).then(res => res.json());
+  if (!data.url) {
+    spinner.fail('No one with this id exists.');
+    process.exit();
+  }
+  return data.url;
+};
+
+const getOptions = async () => {
   const inputs = easymidi.getInputs();
   const outputs = easymidi.getOutputs();
-
-  process.stdout.write('\033c');
-
-  const ngrokSpinner = ora('Getting public URL').start();
-  const myURL = await ngrok.connect(4400);
-  ngrokSpinner.succeed(`Your public url is ${myURL}`);
-
-  console.log('\n\x1b[2mSetup:\x1b[0m');
 
   return await inquirer.prompt([
     {
@@ -31,23 +57,25 @@ const getUrlAndOptions = async () => {
     },
     {
       type: 'input',
-      name: 'ip',
-      message: "What's your partner's URL?",
+      name: 'id',
+      message: "What's your partner's ID?",
     },
   ]);
 };
 
-(async () => {
-  const mySocket = require('socket.io')(4400);
+module.exports = async () => {
+  const mySocket = require('socket.io')(1789);
 
-  const options = await getUrlAndOptions();
+  await startNgrokAndSaveId();
+  const options = await getOptions();
 
-  const input = new easymidi.Input(options.input, true);
-  const output = new easymidi.Output(options.output, true);
+  const input = new easymidi.Input(options.input);
+  const output = new easymidi.Output(options.output);
 
   const connectSpinner = ora('Connecting to partner').start();
 
-  const partnerSocket = io(options.ip);
+  const url = await getNgrokUrlFromId(options.id, connectSpinner);
+  const partnerSocket = io(url);
 
   partnerSocket.on('connect', () => {
     connectSpinner.succeed('Connected to partner!');
@@ -82,4 +110,17 @@ const getUrlAndOptions = async () => {
   partnerSocket.on('cc', msg => {
     output.send('cc', msg);
   });
-})();
+
+  process.on('SIGINT', async () => {
+    try {
+      await fetch('https://jsonbin.org/valtyr/midiator/' + id, {
+        method: 'DELETE',
+        headers: {authorization: 'Bearer ' + client_token},
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      process.exit();
+    }
+  });
+};

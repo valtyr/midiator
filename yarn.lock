@@ -388,9 +388,9 @@ doctrine@^2.1.0:
   dependencies:
     esutils "^2.0.2"
 
-"easymidi@https://github.com/valtyr/node-easymidi.git":
+easymidi@^0.0.4:
   version "0.0.4"
-  resolved "https://github.com/valtyr/node-easymidi.git#e4fd5c587e1d6539e054f0322a0f2c64a6e26e75"
+  resolved "https://registry.yarnpkg.com/easymidi/-/easymidi-0.0.4.tgz#bc3fe28c85eea88879704d38bcce57ffde93d9a7"
   dependencies:
     midi "^0.9.1"
 
@@ -940,6 +940,10 @@ ngrok@^3.0.0:
     request-promise-native "^1.0.5"
     uuid "^3.0.0"
 
+node-fetch@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.1.tgz#369ca70b82f50c86496104a6c776d274f4e4a2d4"
+
 nopt@^3.0.1:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-3.0.6.tgz#c6465dbf08abcd4db359317f79ac68a646b28ff9"
@@ -1071,6 +1075,10 @@ q@^1.1.2:
 qs@~6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
+
+"readable-id@https://github.com/valtyr/readable-id.git":
+  version "1.0.0"
+  resolved "https://github.com/valtyr/readable-id.git#6248591dc68a424e066ad8e185b8fda6d2358d64"
 
 readable-stream@^1.1.8:
   version "1.1.14"

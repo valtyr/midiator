@@ -13,8 +13,14 @@
     "easymidi": "^0.0.4",
     "inquirer": "^5.1.0",
     "ngrok": "^3.0.0",
+    "node-fetch": "^2.1.1",
     "ora": "^2.0.0",
+    "readable-id": "https://github.com/valtyr/readable-id.git",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4"
-  }
+  },
+  "bin": {
+    "midiator": "./bin/midiator.js"
+  },
+  "preferGlobal": true
 }
