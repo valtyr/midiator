@@ -1,7 +1,7 @@
 {
   "name": "midiator",
   "version": "1.0.0",
-  "description": "Stupid midi mediator",
+  "description": "Control your friends' MIDI keyboards through websockets!",
   "main": "index.js",
   "repository": "https://github.com/valtyr/midiator",
   "author": "Valtýr Örn Kjartansson",
