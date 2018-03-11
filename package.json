@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "easymidi": "^0.0.4",
+    "find-free-port": "^1.2.0",
     "inquirer": "^5.1.0",
     "ngrok": "^3.0.0",
     "node-fetch": "^2.1.1",

@@ -5,15 +5,16 @@ const ngrok = require('ngrok');
 const ora = require('ora');
 const rid = require('readable-id');
 const fetch = require('node-fetch');
+const fp = require('find-free-port');
 
 const client_token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkFDcjFZcTZ4ektHIiwicGF0aCI6Im1pZGlhdG9yIiwiaWF0IjoxNTIwNzMxMTA0LCJleHAiOjQ2NzQzMzExMDR9.uSk99x3kmqxfD-ChUnzdCfTTcn6TbxBIrmQMeDZa60I';
 
 let id;
 
-const startNgrokAndSaveId = async () => {
+const startNgrokAndSaveId = async port => {
   const ngrokSpinner = ora('Getting public id').start();
-  const url = await ngrok.connect(1789);
+  const url = await ngrok.connect(port);
 
   id = rid().replace('-', '');
   await fetch('https://jsonbin.org/valtyr/midiator/' + id, {
@@ -64,9 +65,12 @@ const getOptions = async () => {
 };
 
 module.exports = async () => {
-  const mySocket = require('socket.io')(1789);
+  const ports = await fp(4400);
+  const port = ports[0];
 
-  await startNgrokAndSaveId();
+  const mySocket = require('socket.io')(port);
+
+  await startNgrokAndSaveId(port);
   const options = await getOptions();
 
   const input = new easymidi.Input(options.input);
